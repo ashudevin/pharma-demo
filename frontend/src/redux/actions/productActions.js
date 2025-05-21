@@ -1,11 +1,12 @@
 import * as actionTypes from "../constants/productConstants";
-import axios from "axios";
+import productsData from "../../Data/allProductsData";
 
 export const getProducts = () => async (dispatch) => {
   try {
     dispatch({ type: actionTypes.GET_PRODUCTS_REQUEST });
 
-    const { data } = await axios.get("/api/products");
+    // Use static data instead of API call
+    const data = productsData;
 
     dispatch({
       type: actionTypes.GET_PRODUCTS_SUCCESS,
@@ -14,10 +15,7 @@ export const getProducts = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionTypes.GET_PRODUCTS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.message,
     });
   }
 };
@@ -26,19 +24,17 @@ export const getProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: actionTypes.GET_PRODUCT_DETAILS_REQUEST });
 
-    const { data } = await axios.get(`/api/products/${id}`);
+    // Find product from static data
+    const product = productsData.find(p => p.id === id);
 
     dispatch({
       type: actionTypes.GET_PRODUCT_DETAILS_SUCCESS,
-      payload: data,
+      payload: product,
     });
   } catch (error) {
     dispatch({
       type: actionTypes.GET_PRODUCT_DETAILS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.message,
     });
   }
 };

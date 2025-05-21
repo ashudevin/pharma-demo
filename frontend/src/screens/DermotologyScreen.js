@@ -3,23 +3,20 @@ import allProductsData from "../Data/allProductsData";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-
-
 // Components
 import Product from "../components/Product";
 
 //Actions
 import { getProducts as listProducts } from "../redux/actions/productActions";
 
-function StaticScreen() {
-
+function DermotologyScreen() {
   const dispatch = useDispatch();
 
   const getProducts = useSelector((state) => state.getProducts);
   const { products, loading, error } = getProducts;
+
   useEffect(() => {
     dispatch(listProducts());
-
   }, [dispatch]);
 
   return (
@@ -35,19 +32,18 @@ function StaticScreen() {
           ) : error ? (
             <h2>{error}</h2>
           ) : (
-            products.map((product) => product.category === "Dermatology" && (
+            products.map((product) => (
               <Product
-                key={product._id}
+                key={product.id}
                 imgsrc={product.imgsrc}
                 title={product.title}
-                indication={product.indication.length > 100 ? product.indication.slice(0, 100) + "..." : product.indication}
-                dosage={product.dosage.length > 50 ? product.dosage.slice(0, 50) + "..." : product.dosage}
-                sideEffects={product.sideEffects.length > 50 ? product.sideEffects.slice(0, 50) + "..." : product.sideEffects}
-                price={product.price}
-                productId={product._id}
+                indication={product.info}
+                dosage="Please consult your doctor for dosage information"
+                sideEffects="Please consult your doctor for side effects information"
+                price={product.price || 360}
+                productId={product.id}
               />
-            )
-            )
+            ))
           )}
         </div>
       </div>
@@ -55,4 +51,4 @@ function StaticScreen() {
   )
 }
 
-export default StaticScreen
+export default DermotologyScreen

@@ -10,9 +10,21 @@ const connectDB = require("./backend/config/db");
 // Initializing APP
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-render-app-url.onrender.com', 'http://localhost:3000']
+    : 'http://localhost:3000',
+  credentials: true
+};
+
 // Midlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.use('/images', express.static(path.join(__dirname, 'frontend/public/images')));
 
 // Database Connection
 connectDB();
@@ -60,9 +72,6 @@ app.post("/api/payment", (req, res) => {
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, 'frontend/build')));
-
   // Handle React routing, return all requests to React app
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
